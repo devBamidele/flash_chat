@@ -1,8 +1,8 @@
-import 'dart:developer';
-
 import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flash_chat/reusables/my_button.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -27,17 +27,13 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       vsync: this,
     );
 
-    animation =
-        CurvedAnimation(parent: controller, curve: Curves.easeInOutExpo);
+    //animation = CurvedAnimation(parent: controller, curve: Curves.easeInOutExpo);
 
     controller.forward();
-
     animation = ColorTween(begin: Colors.blueGrey, end: Colors.white)
         .animate(controller);
-
     controller.addListener(() {
       setState(() {});
-      log(animation.value.toString());
     });
   }
 
@@ -67,55 +63,33 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     child: Image.asset('images/logo.png'),
                   ),
                 ),
-                const Text(
-                  'Flash Chat',
-                  style: TextStyle(
-                    color: Colors.lightBlue,
-                    fontSize: 45.0,
-                    fontWeight: FontWeight.w900,
-                  ),
+                AnimatedTextKit(
+                  animatedTexts: [
+                    TypewriterAnimatedText(
+                      'Flash Chat',
+                      textStyle: const TextStyle(
+                        color: Colors.lightBlue,
+                        fontSize: 45.0,
+                        fontWeight: FontWeight.w900,
+                      ),
+                      speed: const Duration(milliseconds: 70),
+                    ),
+                  ],
                 ),
               ],
             ),
             const SizedBox(
               height: 48.0,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
-                elevation: 5.0,
-                color: Colors.lightBlueAccent,
-                borderRadius: BorderRadius.circular(30.0),
-                child: MaterialButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, LoginScreen.id);
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: const Text(
-                    'Log In',
-                  ),
-                ),
-              ),
+            const MyButton(
+              myText: 'Log In',
+              navigateTo: LoginScreen.id,
+              myColor: Colors.lightBlueAccent,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
-                color: Colors.blueAccent,
-                borderRadius: BorderRadius.circular(30.0),
-                elevation: 5.0,
-                child: MaterialButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, RegistrationScreen.id);
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: const Text(
-                    'Register',
-                  ),
-                ),
-              ),
-            ),
+            const MyButton(
+                myText: 'Register',
+                navigateTo: RegistrationScreen.id,
+                myColor: Colors.blueAccent),
           ],
         ),
       ),
