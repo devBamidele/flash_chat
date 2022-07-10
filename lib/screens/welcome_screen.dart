@@ -72,7 +72,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                         fontSize: 45.0,
                         fontWeight: FontWeight.w900,
                       ),
-                      speed: const Duration(milliseconds: 70),
+                      speed: const Duration(milliseconds: 120),
                     ),
                   ],
                 ),

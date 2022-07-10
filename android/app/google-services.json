@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "392430438190",
+    "project_id": "flash-chat-e5b5c",
+    "storage_bucket": "flash-chat-e5b5c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:392430438190:android:cb55f09ed4dcb9d460dcbf",
+        "android_client_info": {
+          "package_name": "com.bamidele.flash_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "392430438190-qg6ng9s4dk2gdac49qgb65u3v9m6oalt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDj-PXZSqUnBjX_hT8FgAg_hBL94JaN9OM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "392430438190-qg6ng9s4dk2gdac49qgb65u3v9m6oalt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
