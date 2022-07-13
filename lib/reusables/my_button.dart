@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 class MyButton extends StatelessWidget {
   const MyButton({
     required this.myText,
-    required this.navigateTo,
     required this.myColor,
+    required this.onPressed,
     Key? key,
   }) : super(key: key);
 
   final String myText;
-  final String? navigateTo;
   final Color myColor;
+  final Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +21,7 @@ class MyButton extends StatelessWidget {
         color: myColor,
         borderRadius: BorderRadius.circular(20.0),
         child: MaterialButton(
-          onPressed: () {
-            Navigator.pushNamed(context, navigateTo!);
-          },
+          onPressed: onPressed,
           minWidth: 200.0,
           height: 46.0,
           child: Text(

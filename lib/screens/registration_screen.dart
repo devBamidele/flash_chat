@@ -1,6 +1,11 @@
+import 'dart:developer';
+
 import 'package:flash_chat/constants.dart';
 import 'package:flash_chat/reusables/my_button.dart';
+import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'chat_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
@@ -12,6 +17,22 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  final _auth = FirebaseAuth.instance;
+  String? email;
+  String? password;
+
+  displaySb(String message) =>
+      ScaffoldMessenger.of(context).showSnackBar(ksnackBar(message));
+
+  ksnackBar(String message) => SnackBar(
+        duration: const Duration(seconds: 1),
+        content: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 15.0),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,8 +59,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               height: 48.0,
             ),
             TextField(
+              keyboardType: TextInputType.emailAddress,
+              textAlign: TextAlign.center,
               onChanged: (value) {
-                //Do something with the user input.
+                email = value;
               },
               decoration:
                   kTextFieldDecoration.copyWith(hintText: 'Enter your email'),
@@ -48,8 +71,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               height: 8.0,
             ),
             TextField(
+              obscureText: true,
+              textAlign: TextAlign.center,
               onChanged: (value) {
-                //Do something with the user input.
+                password = value;
               },
               decoration: kTextFieldDecoration.copyWith(
                   hintText: 'Enter your password'),
@@ -57,9 +82,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             const SizedBox(
               height: 24.0,
             ),
-            const MyButton(
+            MyButton(
                 myText: 'Register',
-                navigateTo: null,
+                onPressed: () async {
+                  if (email != null && password != null) {
+                    // Verify that there are values in the required fields
+                    try {
+                      final newUser =
+                          await _auth.createUserWithEmailAndPassword(
+                              email: email.toString(),
+                              password: password.toString());
+
+                      if (!mounted) return;
+                      Navigator.pushNamed(context, ChatScreen.id);
+                    } catch (e) {}
+                  } else {
+                    displaySb('Complete Registration First');
+                  }
+                },
                 myColor: Colors.blueAccent),
           ],
         ),
@@ -67,3 +107,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     );
   }
 }
+
+// log(email.toString());
+// log(password.toString());
