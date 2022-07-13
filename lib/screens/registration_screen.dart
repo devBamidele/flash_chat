@@ -6,6 +6,7 @@ import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'chat_screen.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
@@ -25,11 +26,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       ScaffoldMessenger.of(context).showSnackBar(ksnackBar(message));
 
   ksnackBar(String message) => SnackBar(
-        duration: const Duration(seconds: 1),
+        duration: const Duration(milliseconds: 1200),
         content: Text(
           message,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 15.0),
+          style: const TextStyle(
+              fontSize: 15.0,
+              fontWeight: FontWeight.w500,
+              fontStyle: FontStyle.italic),
         ),
       );
 
@@ -88,16 +92,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   if (email != null && password != null) {
                     // Verify that there are values in the required fields
                     try {
+                      // Create a new user by passing in the email and password as parameters
                       final newUser =
                           await _auth.createUserWithEmailAndPassword(
-                              email: email.toString(),
-                              password: password.toString());
+                        email: email.toString(),
+                        password: password.toString(),
+                      );
 
                       if (!mounted) return;
                       Navigator.pushNamed(context, ChatScreen.id);
-                    } catch (e) {}
+                    } catch (e) {
+                      displaySb('☠  ️Something\'s not right, try again');
+                    }
                   } else {
-                    displaySb('Complete Registration First');
+                    displaySb('Please Complete Registration First');
                   }
                 },
                 myColor: Colors.blueAccent),

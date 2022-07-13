@@ -1,11 +1,10 @@
-import 'dart:developer';
-
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
 import '../reusables/my_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -18,22 +17,23 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _auth = FirebaseAuth.instance;
-  late Firebase loggedInUser;
+  String? email;
+  String? password;
 
-  getCurrentUser() async {
-    try {
-      final user = _auth.currentUser;
-      if (user != null) {
-        loggedInUser = user as Firebase;
-      }
-    } catch (e) {}
-  }
+  displaySb(String message) =>
+      ScaffoldMessenger.of(context).showSnackBar(ksnackBar(message));
 
-  @override
-  void initState() {
-    super.initState();
-    getCurrentUser();
-  }
+  ksnackBar(String message) => SnackBar(
+        duration: const Duration(milliseconds: 1200),
+        content: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+              fontSize: 15.0,
+              fontWeight: FontWeight.w500,
+              fontStyle: FontStyle.italic),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
               keyboardType: TextInputType.emailAddress,
               textAlign: TextAlign.center,
               onChanged: (value) {
-                //Do something with the user input.
+                email = value;
               },
               decoration:
                   kTextFieldDecoration.copyWith(hintText: 'Enter your email'),
@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
               obscureText: true,
               textAlign: TextAlign.center,
               onChanged: (value) {
-                //Do something with the user input.
+                password = value;
               },
               decoration: kTextFieldDecoration.copyWith(
                   hintText: 'Enter your password'),
@@ -86,7 +86,19 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             MyButton(
                 myText: 'Log In',
-                onPressed: () {},
+                onPressed: () async {
+                  try {
+                    // Verify that the user attempting to sign in is already registered
+                    final regUser = await _auth.signInWithEmailAndPassword(
+                      email: email.toString(),
+                      password: password.toString(),
+                    );
+                    if (!mounted) return;
+                    Navigator.pushNamed(context, ChatScreen.id);
+                  } catch (e) {
+                    displaySb('☠  ️Something\'s not right, try again');
+                  }
+                },
                 myColor: Colors.lightBlueAccent),
           ],
         ),
