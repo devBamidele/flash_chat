@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'chat_screen.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
@@ -19,6 +20,7 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final _auth = FirebaseAuth.instance;
+  bool showSpinner = false;
   String? email;
   String? password;
 
@@ -46,70 +48,85 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         title: const Text('Registration'),
       ),
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Hero(
-              tag: 'logo',
-              child: SizedBox(
-                height: 200.0,
-                child: Image.asset('images/logo.png'),
+      body: ModalProgressHUD(
+        opacity: 0.45,
+        color: Colors.grey,
+        inAsyncCall: showSpinner,
+        progressIndicator: kSpinKit,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Hero(
+                tag: 'logo',
+                child: SizedBox(
+                  height: 200.0,
+                  child: Image.asset('images/logo.png'),
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 48.0,
-            ),
-            TextField(
-              keyboardType: TextInputType.emailAddress,
-              textAlign: TextAlign.center,
-              onChanged: (value) {
-                email = value;
-              },
-              decoration:
-                  kTextFieldDecoration.copyWith(hintText: 'Enter your email'),
-            ),
-            const SizedBox(
-              height: 8.0,
-            ),
-            TextField(
-              obscureText: true,
-              textAlign: TextAlign.center,
-              onChanged: (value) {
-                password = value;
-              },
-              decoration: kTextFieldDecoration.copyWith(
-                  hintText: 'Enter your password'),
-            ),
-            const SizedBox(
-              height: 24.0,
-            ),
-            MyButton(
-                myText: 'Register',
-                onPressed: () async {
-                  if (email != null && password != null) {
-                    // Verify that there are values in the required fields
-                    try {
-                      // Create a new user by passing in the email and password as parameters
-                      final newUser =
-                          await _auth.createUserWithEmailAndPassword(
-                        email: email.toString(),
-                        password: password.toString(),
-                      );
-
-                      if (!mounted) return;
-                      Navigator.pushNamed(context, ChatScreen.id);
-                    } catch (e) {
-                      displaySb('☠  ️Something\'s not right, try again');
-                    }
-                  } else {
-                    displaySb('Please Complete Registration First');
-                  }
+              const SizedBox(
+                height: 48.0,
+              ),
+              TextField(
+                keyboardType: TextInputType.emailAddress,
+                textAlign: TextAlign.center,
+                onChanged: (value) {
+                  email = value;
                 },
-                myColor: Colors.blueAccent),
-          ],
+                decoration:
+                    kTextFieldDecoration.copyWith(hintText: 'Enter your email'),
+              ),
+              const SizedBox(
+                height: 8.0,
+              ),
+              TextField(
+                obscureText: true,
+                textAlign: TextAlign.center,
+                onChanged: (value) {
+                  password = value;
+                },
+                decoration: kTextFieldDecoration.copyWith(
+                    hintText: 'Enter your password'),
+              ),
+              const SizedBox(
+                height: 24.0,
+              ),
+              MyButton(
+                  myText: 'Register',
+                  onPressed: () async {
+                    if (email != null && password != null) {
+                      // Verify that there are values in the required fields
+                      setState(() {
+                        showSpinner = true;
+                      });
+                      try {
+                        // Create a new user by passing in the email and password as parameters
+                        final newUser =
+                            await _auth.createUserWithEmailAndPassword(
+                          email: email.toString(),
+                          password: password.toString(),
+                        );
+
+                        if (!mounted) return;
+                        Navigator.pushNamed(context, ChatScreen.id);
+                        setState(() {
+                          showSpinner = false;
+                        });
+                      } catch (e) {
+                        setState(() {
+                          showSpinner = false;
+                        });
+                        displaySb('☠  ️Something\'s not right, try again');
+                      }
+                    } else {
+                      displaySb('Please Complete Registration First');
+                    }
+                  },
+                  myColor: Colors.blueAccent),
+            ],
+          ),
         ),
       ),
     );

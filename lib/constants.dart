@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 const kSendButtonTextStyle = TextStyle(
   color: Colors.lightBlueAccent,
   fontWeight: FontWeight.bold,
   fontSize: 18.0,
+);
+const kSpinKit = SpinKitFadingCircle(
+  duration: Duration(milliseconds: 800),
+  color: Colors.grey,
 );
 
 const kMessageTextFieldDecoration = InputDecoration(
