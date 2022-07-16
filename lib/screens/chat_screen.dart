@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flash_chat/constants.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -15,8 +15,10 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final _firestore = FirebaseFirestore.instance; // Firestore is a
   final _auth = FirebaseAuth.instance;
   late User loggedInUser;
+  late String messageText;
 
   getCurrentUser() {
     try {
@@ -26,6 +28,22 @@ class _ChatScreenState extends State<ChatScreen> {
         log(loggedInUser.email.toString(), name: 'My Flutter App');
       }
     } catch (_) {}
+  }
+
+  // This function has been rendered redundant
+  getMessages() async {
+    final messages = await _firestore.collection('messages').get();
+    for (var message in messages.docs) {
+      log(message.data().toString());
+    }
+  }
+
+  messagesStream() async {
+    await for (var snapshot in _firestore.collection('messages').snapshots()) {
+      for (var message in snapshot.docs) {
+        log(message.toString());
+      }
+    }
   }
 
   @override
@@ -41,12 +59,14 @@ class _ChatScreenState extends State<ChatScreen> {
         leading: null,
         actions: <Widget>[
           IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () {
-                //Implement logout functionality
-                _auth.signOut();
-                Navigator.pop(context);
-              }),
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              //Implement logout functionality
+              _auth.signOut();
+              Navigator.pop(context);
+              // getMessages();
+            },
+          ),
         ],
         title: const Text('⚡️Chat'),
         backgroundColor: Colors.lightBlueAccent,
@@ -64,6 +84,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   Expanded(
                     child: TextField(
                       onChanged: (value) {
+                        messageText = value;
+                        log(messageText);
                         //Do something with the user input.
                       },
                       decoration: kMessageTextFieldDecoration,
@@ -71,6 +93,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   TextButton(
                     onPressed: () {
+                      _firestore.collection('messages').add({
+                        'text': messageText,
+                        'sender': loggedInUser.email,
+                      });
                       //Implement send functionality.
                     },
                     child: const Text(
