@@ -41,3 +41,9 @@ const kTextFieldDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(32.0)),
   ),
 );
+
+TextStyle kRefreshTextStyle = TextStyle(
+  color: Colors.lightBlueAccent.withOpacity(0.4),
+  fontSize: 22.0,
+  fontFamily: 'Spartan MB',
+);

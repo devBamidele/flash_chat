@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flash_chat/constants.dart';
 import 'package:flash_chat/reusables/my_button.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
@@ -7,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'chat_screen.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
